@@ -12,6 +12,7 @@ A CD player in the browser, built from a Figma design. It is one self-contained 
   - Stop
   - Next track
 - **CD changer.** The current disc sinks into the player and the next one slides in.
+- **Parametric equalizer.** A blue screen above the display shows four bands (low shelf, two bells, high shelf), the total curve and a live spectrum. Drag a point to change frequency and gain, scroll to change Q, or use the FREQ, GAIN and Q knobs. Double-click a point or knob to reset it.
 - **Mixer fader for volume.** It has a dB scale and a round LED level meter that goes from green through orange to red.
 - **Dot-matrix LCD.** A yellow-green character display shows "ARTIST - TITLE" scrolling back and forth, the time remaining, a progress bar and the track length.
 - **Brushed aluminium housing** with screws in the corners.

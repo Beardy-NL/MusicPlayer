@@ -26,20 +26,21 @@ html{overflow-x:hidden}
 html.land,html.land body{overflow:hidden}
 html.land body{padding:0;justify-content:flex-start;align-items:flex-start}
 html.land .note{display:none}
-.device.land{display:grid;grid-template-columns:678px 130px minmax(0,1fr);grid-template-rows:1fr auto auto auto 1fr;
-  grid-template-areas:". . ." "well strip title" "well strip display" "well strip transport" ". . .";
+.device.land{display:grid;grid-template-columns:678px 130px minmax(0,1fr);grid-template-rows:1fr auto auto auto auto 1fr;
+  grid-template-areas:". . ." "well strip title" "well strip eq" "well strip display" "well strip transport" ". . .";
   column-gap:50px;row-gap:40px;align-items:center;border-radius:0;padding:49px 60px}
 .land .deck{display:contents}
 .land .well{grid-area:well;grid-row:1/-1;align-self:center}
 .land .strip{grid-area:strip;grid-row:1/-1;height:678px;align-self:center}
 .land h1{grid-area:title;align-self:center}
+.land .eq{grid-area:eq;width:848px;justify-self:center}
 .land .display{grid-area:display;width:848px;justify-self:center}
 .land .transport{grid-area:transport}
 /* portrait phones/tablets: the housing runs from the top of the screen to the bottom; the free height is shared evenly */
 html.port,html.port body,html.land,html.land body{overflow:hidden;background:#d9d9d9}
 html.port body{padding:0;justify-content:flex-start;align-items:flex-start}
 .device.port{border-radius:0;justify-content:flex-start;gap:36px}
-.port h1,.port .deck,.port .display{margin-top:auto}
+.port h1,.port .deck,.port .eq{margin-top:auto}
 .port .transport{margin-bottom:auto}
 #fit{position:relative}
 .device{position:absolute;left:0;top:0;transform-origin:0 0;width:968px;border-radius:30px;padding:49px 60px 52px;display:flex;flex-direction:column;align-items:center;gap:36px;color:#3d3d3d;
@@ -106,6 +107,36 @@ h1::before,h1::after{content:"";flex:1;height:2px;background:linear-gradient(rgb
 .cap:focus-visible{box-shadow:0 0 0 3px #d9d9d9,0 0 0 5px #3d3d3d,0 8px 12px -4px rgba(0,0,0,.45)}
 .readout{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;min-width:74px;text-align:center;padding:6px 0;border-radius:8px;background:#c2c2c2;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
 /* display */
+/* parametric EQ: dark glass screen in blue tones, silver knobs on the housing */
+.eq{width:100%;display:flex;flex-direction:column;gap:18px}
+.eq-bezel{position:relative;border-radius:14px;padding:12px;background:linear-gradient(#262626,#141414);box-shadow:0 2px 0 rgba(255,255,255,.55),inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 4px rgba(0,0,0,.6),0 6px 14px -6px rgba(0,0,0,.45)}
+#eqc{display:block;width:824px;height:250px;border-radius:6px;touch-action:none;cursor:crosshair}
+#eqc.grab{cursor:grab}
+.eq-ctrl{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 4px}
+.bands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:236px}
+.band{display:flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 10px;border-radius:19px;border:0;cursor:pointer;
+  background:linear-gradient(#e2e2e2,#cbcbcb);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 2px 0 #a3a3a3,0 3px 5px rgba(0,0,0,.12);
+  font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:1.5px;color:#4a4a4a;white-space:nowrap}
+.band i{width:9px;height:9px;border-radius:50%;background:var(--c);opacity:.4;flex:none}
+.band[aria-checked=true]{background:linear-gradient(#c3c8ce,#d3d7db);box-shadow:inset 0 2px 4px rgba(0,0,0,.25),0 1px 0 rgba(255,255,255,.7);color:#1f2a3a}
+.band[aria-checked=true] i{opacity:1;box-shadow:0 0 7px 1px var(--c)}
+.band:focus-visible,.mini:focus-visible{outline:3px solid #3d3d3d;outline-offset:3px}
+.dial-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;width:100px}
+.dial{position:relative;width:72px;height:72px;border-radius:50%;cursor:ns-resize;touch-action:none;outline:none;
+  background:conic-gradient(from 225deg,#3b82f6 0 var(--a,0deg),rgba(0,0,0,.16) var(--a,0deg) 270deg,transparent 270deg)}
+.dial b{position:absolute;inset:7px;border-radius:50%;transform:rotate(var(--r,0deg));
+  background:radial-gradient(circle at 38% 30%,#fdfdfd,#d4d4d4 48%,#a9a9a9);box-shadow:0 5px 9px rgba(0,0,0,.32),inset 0 1px 0 #fff,inset 0 -2px 3px rgba(0,0,0,.18)}
+.dial b::after{content:"";position:absolute;left:50%;top:6px;width:3px;height:17px;margin-left:-1.5px;border-radius:2px;background:#1e3a8a}
+.dial:focus-visible{box-shadow:0 0 0 3px #d9d9d9,0 0 0 5px #3d3d3d}
+.dial.off{opacity:.4;cursor:default}
+.dial-wrap label{font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:2px;color:#4a4a4a}
+.dial-wrap output{font:600 13px/1 Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;width:88px;text-align:center;padding:6px 0;border-radius:7px;background:#c2c2c2;box-shadow:inset 0 1px 3px rgba(0,0,0,.2);white-space:nowrap}
+.eq-btns{display:flex;flex-direction:column;gap:10px}
+.mini{display:flex;align-items:center;justify-content:center;gap:8px;height:38px;min-width:104px;border-radius:19px;border:0;cursor:pointer;
+  background:#8a8a8a;color:#f2f2f2;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:1.5px;box-shadow:0 3px 0 #707070,0 5px 8px rgba(0,0,0,.15)}
+.mini:active{transform:translateY(3px);box-shadow:0 0 0 #707070,inset 0 2px 4px rgba(0,0,0,.25)}
+.mini i{width:8px;height:8px;border-radius:50%;background:#3a3f46}
+.mini[aria-pressed=true] i{background:#60a5fa;box-shadow:0 0 7px 1px #3b82f6}
 .display{width:100%;display:flex;flex-direction:column;gap:14px}
 /* character LCD: black bezel, yellow-green backlit glass, 5×7 dot-matrix */
 .bezel{position:relative;border-radius:14px;padding:18px;background:linear-gradient(#262626,#141414);box-shadow:0 2px 0 rgba(255,255,255,.55),inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 4px rgba(0,0,0,.6),0 6px 14px -6px rgba(0,0,0,.45)}
@@ -165,6 +196,17 @@ kbd{font:inherit;font-weight:600}
       </div>
     </div>
 
+    <section class="eq" aria-label="Equalizer">
+      <div class="eq-bezel"><canvas id="eqc" aria-hidden="true"></canvas></div>
+      <div class="eq-ctrl">
+        <div class="bands" role="radiogroup" aria-label="Band"></div>
+        <div class="dial-wrap"><div class="dial" id="kF" role="slider" tabindex="0" aria-label="Frequentie"><b></b></div><label>FREQ</label><output id="vF"></output></div>
+        <div class="dial-wrap"><div class="dial" id="kG" role="slider" tabindex="0" aria-label="Versterking"><b></b></div><label>GAIN</label><output id="vG"></output></div>
+        <div class="dial-wrap"><div class="dial" id="kQ" role="slider" tabindex="0" aria-label="Q (bandbreedte)"><b></b></div><label>Q</label><output id="vQ"></output></div>
+        <div class="eq-btns"><button class="mini" id="eqOn" aria-pressed="true" title="Equalizer aan/uit"><i></i>EQ</button><button class="mini" id="eqReset" title="Alle banden terugzetten">RESET</button></div>
+      </div>
+    </section>
+
     <div class="display">
       <div class="bezel"><div class="glass"><canvas id="lcd" aria-hidden="true"></canvas></div></div>
       <p class="sr" id="meta" aria-live="polite"></p>
@@ -202,7 +244,7 @@ const fitDevice = () => {
   if (land) {
     document.documentElement.classList.remove('port'); device.classList.remove('port');
     // size the housing to the screen's own aspect ratio, so it fills it edge to edge
-    const aspect = vw / vh, dw = Math.max(1900, 800 * aspect), dh = dw / aspect, s = vw / dw;
+    const aspect = vw / vh, dw = Math.max(1900, 1040 * aspect), dh = dw / aspect, s = vw / dw;
     device.style.width = dw + 'px'; device.style.height = dh + 'px'; device.style.transform = `scale(${s})`;
     fit.style.width = vw + 'px'; fit.style.height = vh + 'px';
     return;
@@ -222,7 +264,7 @@ const fitDevice = () => {
   const pad = vw <= 600 ? 16 : 24;
   const ws = (vw - pad) / W, hs = (vh - pad) / H;
   // phones and tablets: always fit the whole player on screen; desktop: fit the width, and the height down to a readable size
-  const s = touch.matches ? Math.min(1, ws, hs) : Math.min(1, ws, Math.max(hs, Math.min(ws, .55)));
+  const s = touch.matches ? Math.min(1, ws, hs) : Math.min(1, ws, Math.max(hs, Math.min(ws, .45)));
   device.style.transform = `scale(${s})`;
   fit.style.width = W * s + 'px'; fit.style.height = H * s + 'px';
 };
@@ -253,6 +295,7 @@ const flagsAt = bar => { let f = ''; for (const [b, s] of SECTIONS) if (bar >= b
 const mtof = m => 440 * 2 ** ((m - 69) / 12);
 
 /* ---------- audio graph ---------- */
+let eqNodes = [], specAn = null, specBuf = null;
 let ctx, noise, pre, comp, faderGain, analyser, delay, fb, wet, buf;
 const initAudio = () => {
   if (ctx) return;
@@ -261,7 +304,12 @@ const initAudio = () => {
   comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
   faderGain = ctx.createGain(); faderGain.gain.value = dbToGain(posToDb(fader));
   analyser = ctx.createAnalyser(); analyser.fftSize = 1024; buf = new Float32Array(analyser.fftSize);
-  pre.connect(comp).connect(faderGain).connect(analyser).connect(ctx.destination);
+  // pre → EQ bands → compressor → fader → meter → out; the spectrum is read right after the EQ
+  eqNodes = EQ.map(b => { const f = ctx.createBiquadFilter(); f.type = b.type; f.frequency.value = b.f; f.gain.value = eqOn ? b.g : 0; f.Q.value = b.q; return f; });
+  let node = pre; for (const f of eqNodes) { node.connect(f); node = f; }
+  specAn = ctx.createAnalyser(); specAn.fftSize = 4096; specAn.smoothingTimeConstant = .8; specBuf = new Float32Array(specAn.frequencyBinCount);
+  node.connect(specAn); node.connect(comp);
+  comp.connect(faderGain).connect(analyser).connect(ctx.destination);
   delay = ctx.createDelay(2); fb = ctx.createGain(); fb.gain.value = .35; wet = ctx.createGain(); wet.gain.value = .3;
   delay.connect(fb).connect(delay); delay.connect(wet).connect(pre);
   noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
@@ -628,6 +676,7 @@ const frame = t => {
 
   if (playing || scan) updateTime();
   drawLcd(...lcdLines(t));
+  drawEq();
   let lvl = -90;
   if (analyser && ctx.state === 'running') {
     analyser.getFloatTimeDomainData(buf);
@@ -670,6 +719,181 @@ const swapCd = async () => {
   if (resume) play(); else render();
 };
 $('swap').addEventListener('click', swapCd);
+/* ---------- parametric equalizer ---------- */
+const EQ_DEF = [
+  {type: 'lowshelf',  f: 100,  g: 3,  q: .7,  name: 'LOW',    col: '#38bdf8'},
+  {type: 'peaking',   f: 450,  g: -2, q: 1.2, name: 'LO-MID', col: '#3b82f6'},
+  {type: 'peaking',   f: 3000, g: 2,  q: .9,  name: 'HI-MID', col: '#818cf8'},
+  {type: 'highshelf', f: 9000, g: 1.5, q: .7, name: 'HIGH',   col: '#22d3ee'}
+];
+const EQ = EQ_DEF.map(b => ({...b}));
+let eqSel = 1, eqOn = true, eqDirty = true;
+const FMIN = 20, FMAX = 20000, GMAX = 15, QMIN = .3, QMAX = 10, FS = 48000;
+const applyBand = i => {
+  const n = eqNodes[i], b = EQ[i]; if (!n) return;
+  const t = ctx.currentTime;
+  n.frequency.setTargetAtTime(b.f, t, .02); n.gain.setTargetAtTime(eqOn ? b.g : 0, t, .02); n.Q.setTargetAtTime(b.q, t, .02);
+};
+// RBJ biquad magnitude (same filters as Web Audio), in dB
+const bandDb = (b, f) => {
+  if (!eqOn || !b.g) return 0;
+  const A = 10 ** (b.g / 40), w0 = 2 * Math.PI * b.f / FS, cs = Math.cos(w0), sn = Math.sin(w0);
+  let b0, b1, b2, a0, a1, a2;
+  if (b.type === 'peaking') {
+    const al = sn / (2 * b.q);
+    b0 = 1 + al * A; b1 = -2 * cs; b2 = 1 - al * A; a0 = 1 + al / A; a1 = -2 * cs; a2 = 1 - al / A;
+  } else {
+    const al = sn / Math.SQRT2, sA = 2 * Math.sqrt(A) * al;
+    if (b.type === 'lowshelf') {
+      b0 = A * ((A + 1) - (A - 1) * cs + sA); b1 = 2 * A * ((A - 1) - (A + 1) * cs); b2 = A * ((A + 1) - (A - 1) * cs - sA);
+      a0 = (A + 1) + (A - 1) * cs + sA; a1 = -2 * ((A - 1) + (A + 1) * cs); a2 = (A + 1) + (A - 1) * cs - sA;
+    } else {
+      b0 = A * ((A + 1) + (A - 1) * cs + sA); b1 = -2 * A * ((A - 1) + (A + 1) * cs); b2 = A * ((A + 1) + (A - 1) * cs - sA);
+      a0 = (A + 1) - (A - 1) * cs + sA; a1 = 2 * ((A - 1) - (A + 1) * cs); a2 = (A + 1) - (A - 1) * cs - sA;
+    }
+  }
+  const w = 2 * Math.PI * f / FS, c1 = Math.cos(w), s1 = Math.sin(w), c2 = Math.cos(2 * w), s2 = Math.sin(2 * w);
+  const nr = b0 + b1 * c1 + b2 * c2, ni = -(b1 * s1 + b2 * s2), dr = a0 + a1 * c1 + a2 * c2, di = -(a1 * s1 + a2 * s2);
+  return 10 * Math.log10((nr * nr + ni * ni) / (dr * dr + di * di));
+};
+
+const eqc = $('eqc'), ec = eqc.getContext('2d'), EW = 824, EH = 250, PADB = 22;
+{ const r = Math.min(3, Math.max(2, Math.ceil(devicePixelRatio || 1))); eqc.width = EW * r; eqc.height = EH * r; ec.setTransform(r, 0, 0, r, 0, 0); }
+const LF = Math.log(FMAX / FMIN);
+const fx = f => Math.log(f / FMIN) / LF * EW, xf = x => FMIN * Math.exp(x / EW * LF);
+const PH = EH - PADB, gy = g => PH / 2 - g / GMAX * (PH / 2 - 14), yg = y => (PH / 2 - y) / (PH / 2 - 14) * GMAX;
+const XS = 206; let curves = null, spec = new Float32Array(XS).fill(-120);
+const calcCurves = () => {
+  curves = EQ.map(b => Array.from({length: XS}, (_, i) => bandDb(b, xf(i / (XS - 1) * EW))));
+  curves.sum = curves[0].map((_, i) => curves.reduce((s, c) => s + c[i], 0));
+  eqDirty = false;
+};
+const hexA = (h, a) => `rgba(${parseInt(h.slice(1, 3), 16)},${parseInt(h.slice(3, 5), 16)},${parseInt(h.slice(5, 7), 16)},${a})`;
+const fmtF = f => f >= 1000 ? (f / 1000).toFixed(f >= 10000 ? 1 : 2).replace(/\.?0+$/, '') + ' kHz' : Math.round(f) + ' Hz';
+const fmtG = g => (g > .05 ? '+' : g < -.05 ? '−' : '') + Math.abs(g).toFixed(1) + ' dB';
+const drawEq = () => {
+  if (eqDirty || !curves) calcCurves();
+  const bg = ec.createLinearGradient(0, 0, 0, EH); bg.addColorStop(0, '#0b1f3d'); bg.addColorStop(1, '#050d1c');
+  ec.fillStyle = bg; ec.fillRect(0, 0, EW, EH);
+  // grid
+  ec.font = '500 10px Inter, system-ui, sans-serif'; ec.textBaseline = 'middle';
+  for (const [f, l] of [[50, '50'], [100, '100'], [200, '200'], [500, '500'], [1000, '1k'], [2000, '2k'], [5000, '5k'], [10000, '10k']]) {
+    const x = fx(f); ec.fillStyle = 'rgba(120,170,255,.08)'; ec.fillRect(x, 0, 1, PH);
+    ec.fillStyle = 'rgba(150,190,255,.5)'; ec.textAlign = 'center'; ec.fillText(l, x, PH + PADB / 2);
+  }
+  for (const g of [-12, -6, 0, 6, 12]) {
+    const y = gy(g); ec.fillStyle = g ? 'rgba(120,170,255,.08)' : 'rgba(120,170,255,.22)'; ec.fillRect(0, y, EW, 1);
+    if (g) { ec.fillStyle = 'rgba(150,190,255,.5)'; ec.textAlign = 'right'; ec.fillText((g > 0 ? '+' : '') + g, EW - 6, y - 7); }
+  }
+  // live spectrum
+  if (specAn && ctx.state === 'running') {
+    specAn.getFloatFrequencyData(specBuf);
+    const bin = ctx.sampleRate / specAn.fftSize;
+    for (let i = 0; i < XS; i++) {
+      const f0 = xf((i - .5) / (XS - 1) * EW), f1 = xf((i + .5) / (XS - 1) * EW);
+      let m = -140; for (let k = Math.max(1, Math.floor(f0 / bin)); k <= Math.max(1, Math.ceil(f1 / bin)) && k < specBuf.length; k++) m = Math.max(m, specBuf[k]);
+      m += 3 * Math.log2(Math.max(1, (f0 + f1) / 2 / 1000) + 1); // gentle tilt so highs read
+      spec[i] = Math.max(m, spec[i] - 2.2);
+    }
+  } else for (let i = 0; i < XS; i++) spec[i] -= 2.2;
+  const sy = d => PH - Math.max(0, Math.min(1, (d + 95) / 80)) * (PH - 10);
+  ec.beginPath(); ec.moveTo(0, PH);
+  for (let i = 0; i < XS; i++) ec.lineTo(i / (XS - 1) * EW, sy(spec[i]));
+  ec.lineTo(EW, PH); ec.closePath();
+  const sg = ec.createLinearGradient(0, 0, 0, PH); sg.addColorStop(0, 'rgba(96,165,250,.35)'); sg.addColorStop(1, 'rgba(96,165,250,.03)');
+  ec.fillStyle = sg; ec.fill(); ec.strokeStyle = 'rgba(147,197,253,.4)'; ec.lineWidth = 1; ec.stroke();
+  // band areas
+  ec.globalAlpha = eqOn ? 1 : .35;
+  const y0 = gy(0);
+  EQ.forEach((b, j) => {
+    ec.beginPath(); ec.moveTo(0, y0);
+    curves[j].forEach((d, i) => ec.lineTo(i / (XS - 1) * EW, gy(d)));
+    ec.lineTo(EW, y0); ec.closePath();
+    ec.fillStyle = hexA(b.col, j === eqSel ? .32 : .16); ec.fill();
+    ec.strokeStyle = hexA(b.col, j === eqSel ? .9 : .45); ec.lineWidth = 1.2; ec.stroke();
+  });
+  // overall curve
+  ec.save(); ec.shadowColor = '#3b82f6'; ec.shadowBlur = 10;
+  ec.beginPath(); curves.sum.forEach((d, i) => i ? ec.lineTo(i / (XS - 1) * EW, gy(d)) : ec.moveTo(0, gy(d)));
+  ec.strokeStyle = '#dbeafe'; ec.lineWidth = 2.2; ec.stroke(); ec.restore();
+  // nodes
+  EQ.forEach((b, j) => {
+    const x = fx(b.f), y = gy(b.g);
+    ec.beginPath(); ec.arc(x, y, j === eqSel ? 8 : 6.5, 0, 7);
+    ec.fillStyle = b.col; ec.fill();
+    ec.lineWidth = 2; ec.strokeStyle = j === eqSel ? '#fff' : 'rgba(5,13,28,.8)'; ec.stroke();
+  });
+  ec.globalAlpha = 1;
+  // readout of the selected band
+  const b = EQ[eqSel];
+  ec.textAlign = 'left'; ec.font = '600 11px Inter, system-ui, sans-serif'; ec.fillStyle = eqOn ? b.col : 'rgba(150,190,255,.5)';
+  ec.fillText(eqOn ? `${b.name}  ·  ${fmtF(b.f)}  ·  ${fmtG(b.g)}${b.type === 'peaking' ? '  ·  Q ' + b.q.toFixed(2) : ''}` : 'EQ UIT', 10, 13);
+};
+
+/* band buttons + knobs */
+const bandsEl = document.querySelector('.bands');
+bandsEl.innerHTML = EQ.map((b, i) => `<button class="band" role="radio" data-b="${i}" style="--c:${b.col}"><i></i>${b.name}</button>`).join('');
+const KN = {
+  F: {el: $('kF'), out: $('vF'), get: b => Math.log(b.f / FMIN) / LF, set: (b, t) => { b.f = FMIN * Math.exp(t * LF); }, fmt: b => fmtF(b.f)},
+  G: {el: $('kG'), out: $('vG'), get: b => (b.g + GMAX) / (2 * GMAX), set: (b, t) => { b.g = Math.round((t * 2 - 1) * GMAX * 10) / 10; }, fmt: b => fmtG(b.g)},
+  Q: {el: $('kQ'), out: $('vQ'), get: b => Math.log(b.q / QMIN) / Math.log(QMAX / QMIN), set: (b, t) => { b.q = QMIN * (QMAX / QMIN) ** t; }, fmt: b => b.type === 'peaking' ? b.q.toFixed(2) : '—'}
+};
+const syncEq = () => {
+  const b = EQ[eqSel];
+  bandsEl.querySelectorAll('.band').forEach((el, i) => el.setAttribute('aria-checked', i === eqSel));
+  for (const [k, kn] of Object.entries(KN)) {
+    const t = Math.max(0, Math.min(1, kn.get(b))), off = k === 'Q' && b.type !== 'peaking';
+    kn.el.style.setProperty('--r', (-135 + t * 270) + 'deg'); kn.el.style.setProperty('--a', (t * 270) + 'deg');
+    kn.el.classList.toggle('off', off); kn.el.setAttribute('aria-disabled', off);
+    kn.el.setAttribute('aria-valuenow', Math.round(t * 100)); kn.el.setAttribute('aria-valuetext', kn.fmt(b));
+    kn.out.textContent = kn.fmt(b);
+  }
+  $('eqOn').setAttribute('aria-pressed', eqOn);
+  eqDirty = true;
+};
+const changed = i => { applyBand(i); syncEq(); };
+bandsEl.addEventListener('click', e => { const el = e.target.closest('.band'); if (el) { eqSel = +el.dataset.b; syncEq(); } });
+for (const [k, kn] of Object.entries(KN)) {
+  const off = () => k === 'Q' && EQ[eqSel].type !== 'peaking';
+  const setT = t => { if (off()) return; kn.set(EQ[eqSel], Math.max(0, Math.min(1, t))); changed(eqSel); };
+  let start = null;
+  kn.el.addEventListener('pointerdown', e => { if (off()) return; kn.el.setPointerCapture(e.pointerId); start = {y: e.clientY, t: kn.get(EQ[eqSel])}; kn.el.focus({preventScroll: true}); });
+  kn.el.addEventListener('pointermove', e => { if (start) setT(start.t + (start.y - e.clientY) / 220); });
+  const up = () => { start = null; }; kn.el.addEventListener('pointerup', up); kn.el.addEventListener('pointercancel', up);
+  kn.el.addEventListener('wheel', e => { e.preventDefault(); setT(kn.get(EQ[eqSel]) - Math.sign(e.deltaY) * .02); }, {passive: false});
+  kn.el.addEventListener('dblclick', () => { const d = EQ_DEF[eqSel]; ({F: () => EQ[eqSel].f = d.f, G: () => EQ[eqSel].g = 0, Q: () => EQ[eqSel].q = d.q})[k](); changed(eqSel); });
+  kn.el.addEventListener('keydown', e => {
+    const s = e.shiftKey ? .05 : .01, d = {ArrowUp: s, ArrowRight: s, ArrowDown: -s, ArrowLeft: -s}[e.key];
+    if (d) { e.preventDefault(); e.stopPropagation(); setT(kn.get(EQ[eqSel]) + d); }
+  });
+}
+$('eqOn').addEventListener('click', () => { eqOn = !eqOn; EQ.forEach((_, i) => applyBand(i)); syncEq(); });
+$('eqReset').addEventListener('click', () => { EQ.forEach((b, i) => Object.assign(b, EQ_DEF[i])); eqOn = true; EQ.forEach((_, i) => applyBand(i)); syncEq(); });
+
+/* drag the nodes on the screen: left/right = frequency, up/down = gain, wheel = Q */
+const eqPt = e => { const r = eqc.getBoundingClientRect(); return [(e.clientX - r.left) * EW / r.width, (e.clientY - r.top) * EH / r.height]; };
+const nearNode = (x, y) => { let best = -1, bd = 26; EQ.forEach((b, i) => { const d = Math.hypot(fx(b.f) - x, gy(b.g) - y); if (d < bd) { bd = d; best = i; } }); return best; };
+let eqDrag = false;
+eqc.addEventListener('pointerdown', e => {
+  const [x, y] = eqPt(e), i = nearNode(x, y); if (i < 0) return;
+  eqSel = i; eqDrag = true; eqc.setPointerCapture(e.pointerId); syncEq();
+});
+eqc.addEventListener('pointermove', e => {
+  const [x, y] = eqPt(e);
+  if (!eqDrag) { eqc.classList.toggle('grab', nearNode(x, y) >= 0); return; }
+  const b = EQ[eqSel];
+  b.f = Math.max(FMIN, Math.min(FMAX, xf(Math.max(0, Math.min(EW, x)))));
+  b.g = Math.round(Math.max(-GMAX, Math.min(GMAX, yg(y))) * 10) / 10;
+  changed(eqSel);
+});
+const eqUp = () => { eqDrag = false; }; eqc.addEventListener('pointerup', eqUp); eqc.addEventListener('pointercancel', eqUp);
+eqc.addEventListener('dblclick', e => { const [x, y] = eqPt(e), i = nearNode(x, y); if (i >= 0) { EQ[i].g = 0; eqSel = i; changed(i); } });
+eqc.addEventListener('wheel', e => {
+  const b = EQ[eqSel]; if (b.type !== 'peaking') return;
+  e.preventDefault(); b.q = Math.max(QMIN, Math.min(QMAX, b.q * (e.deltaY > 0 ? .92 : 1.08))); changed(eqSel);
+}, {passive: false});
+syncEq();
+
 render(); setFader(fader, false); requestAnimationFrame(frame);
 }
 </script>
