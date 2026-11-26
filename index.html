@@ -21,6 +21,19 @@ html{overflow-x:hidden}
 @media (max-width:600px){body{padding:8px}.note{font-size:12px;margin-top:10px}}
 @media (pointer:coarse){.keys{display:none}}
 @media (max-height:500px){.note{display:none}}
+/* landscape phones/tablets: the housing fills the whole screen — disc left, fader, then title, display and buttons on the right */
+html.land,html.land body{overflow:hidden}
+html.land body{padding:0;justify-content:flex-start;align-items:flex-start}
+html.land .note{display:none}
+.device.land{display:grid;grid-template-columns:678px 130px minmax(0,1fr);grid-template-rows:1fr auto auto auto 1fr;
+  grid-template-areas:". . ." "well strip title" "well strip display" "well strip transport" ". . .";
+  column-gap:50px;row-gap:40px;align-items:center;border-radius:0;padding:49px 60px}
+.land .deck{display:contents}
+.land .well{grid-area:well;grid-row:1/-1;align-self:center}
+.land .strip{grid-area:strip;grid-row:1/-1;height:678px;align-self:center}
+.land h1{grid-area:title;align-self:center}
+.land .display{grid-area:display;width:848px;justify-self:center}
+.land .transport{grid-area:transport}
 #fit{position:relative}
 .device{position:absolute;left:0;top:0;transform-origin:0 0;width:968px;border-radius:30px;padding:49px 60px 52px;display:flex;flex-direction:column;align-items:center;gap:36px;color:#3d3d3d;
   /* brushed aluminium: light sweep + stretched noise grain + fine horizontal lines on the design's grey */
@@ -177,8 +190,18 @@ const W = 968;
 // the housing scales as one piece, so every part keeps its proportions
 const touch = matchMedia('(pointer: coarse)');
 const fitDevice = () => {
-  const H = device.offsetHeight;
   const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  const land = vw > vh * 1.15 && (touch.matches || vh < 600);
+  document.documentElement.classList.toggle('land', land); device.classList.toggle('land', land);
+  if (land) {
+    // size the housing to the screen's own aspect ratio, so it fills it edge to edge
+    const aspect = vw / vh, dw = Math.max(1900, 800 * aspect), dh = dw / aspect, s = vw / dw;
+    device.style.width = dw + 'px'; device.style.height = dh + 'px'; device.style.transform = `scale(${s})`;
+    fit.style.width = vw + 'px'; fit.style.height = vh + 'px';
+    return;
+  }
+  device.style.width = device.style.height = '';
+  const H = device.offsetHeight;
   const pad = vw <= 600 ? 16 : 24;
   const note = document.querySelector('.note'), noteH = note.offsetHeight + parseFloat(getComputedStyle(note).marginTop);
   const ws = (vw - pad) / W, hs = (vh - pad - noteH - 14) / H;
