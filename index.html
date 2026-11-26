@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#dcdcdc">
 <title>Beardy's Music Player</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +35,12 @@ html.land .note{display:none}
 .land h1{grid-area:title;align-self:center}
 .land .display{grid-area:display;width:848px;justify-self:center}
 .land .transport{grid-area:transport}
+/* portrait phones/tablets: the housing runs from the top of the screen to the bottom; the free height is shared evenly */
+html.port,html.port body,html.land,html.land body{overflow:hidden;background:#d9d9d9}
+html.port body{padding:0;justify-content:flex-start;align-items:flex-start}
+.device.port{border-radius:0;justify-content:flex-start;gap:36px}
+.port h1,.port .deck,.port .display{margin-top:auto}
+.port .transport{margin-bottom:auto}
 #fit{position:relative}
 .device{position:absolute;left:0;top:0;transform-origin:0 0;width:968px;border-radius:30px;padding:49px 60px 52px;display:flex;flex-direction:column;align-items:center;gap:36px;color:#3d3d3d;
   /* brushed aluminium: light sweep + stretched noise grain + fine horizontal lines on the design's grey */
@@ -193,6 +200,7 @@ const fitDevice = () => {
   const land = vw > vh * 1.15 && (touch.matches || vh < 600);
   document.documentElement.classList.toggle('land', land); device.classList.toggle('land', land);
   if (land) {
+    document.documentElement.classList.remove('port'); device.classList.remove('port');
     // size the housing to the screen's own aspect ratio, so it fills it edge to edge
     const aspect = vw / vh, dw = Math.max(1900, 800 * aspect), dh = dw / aspect, s = vw / dw;
     device.style.width = dw + 'px'; device.style.height = dh + 'px'; device.style.transform = `scale(${s})`;
@@ -200,7 +208,17 @@ const fitDevice = () => {
     return;
   }
   device.style.width = device.style.height = '';
+  const port = touch.matches && !land;
+  document.documentElement.classList.toggle('port', port); device.classList.remove('port');
   const H = device.offsetHeight;
+  if (port) {
+    // keep the design width, stretch the housing to the screen's height (or widen it on squat screens)
+    const aspect = vh / vw, dw = Math.max(W, H / aspect), dh = dw * aspect, s = vw / dw;
+    device.classList.add('port');
+    device.style.width = dw + 'px'; device.style.height = dh + 'px'; device.style.transform = `scale(${s})`;
+    fit.style.width = vw + 'px'; fit.style.height = vh + 'px';
+    return;
+  }
   const pad = vw <= 600 ? 16 : 24;
   const ws = (vw - pad) / W, hs = (vh - pad) / H;
   // phones and tablets: always fit the whole player on screen; desktop: fit the width, and the height down to a readable size
