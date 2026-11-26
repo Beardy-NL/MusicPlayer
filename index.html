@@ -16,7 +16,11 @@
 :root{color-scheme:light dark;--bg:light-dark(#e6e6e6,#1c1c1c);--ink:light-dark(#3d3d3d,#bdbdbd)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+html{overflow-x:hidden}
+@media (max-width:600px){body{padding:8px}.note{font-size:12px;margin-top:10px}}
+@media (pointer:coarse){.keys{display:none}}
+@media (max-height:500px){.note{display:none}}
 #fit{position:relative}
 .device{position:absolute;left:0;top:0;transform-origin:0 0;width:968px;border-radius:30px;padding:49px 60px 52px;display:flex;flex-direction:column;align-items:center;gap:36px;color:#3d3d3d;
   /* brushed aluminium: light sweep + stretched noise grain + fine horizontal lines on the design's grey */
@@ -160,7 +164,7 @@ kbd{font:inherit;font-weight:600}
     </div>
   </div>
 </div>
-<p class="note">De nummers zijn voorbeelden; de muziek wordt live in je browser gegenereerd (Web Audio). Sneltoetsen: <kbd>spatie</kbd> afspelen/pauze, <kbd>←</kbd>/<kbd>→</kbd> spoelen, <kbd>↑</kbd>/<kbd>↓</kbd> volume, <kbd>N</kbd>/<kbd>P</kbd> volgend/vorig, <kbd>C</kbd> wissel cd.</p>
+<p class="note">De nummers zijn voorbeelden; de muziek wordt live in je browser gegenereerd (Web Audio).<span class="keys"> Sneltoetsen: <kbd>spatie</kbd> afspelen/pauze, <kbd>←</kbd>/<kbd>→</kbd> spoelen, <kbd>↑</kbd>/<kbd>↓</kbd> volume, <kbd>N</kbd>/<kbd>P</kbd> volgend/vorig, <kbd>C</kbd> wissel cd.</span></p>
 
 <script>
 {
@@ -170,14 +174,21 @@ const device = $('device');
 /* ---------- fit the fixed-size device to the window ---------- */
 const fit = $('fit');
 const W = 968;
+// the housing scales as one piece, so every part keeps its proportions
+const touch = matchMedia('(pointer: coarse)');
 const fitDevice = () => {
   const H = device.offsetHeight;
-  const ws = (innerWidth - 24) / W, hs = (innerHeight - 70) / H;
-  const s = Math.min(1, ws, Math.max(hs, Math.min(ws, .55)));
+  const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  const pad = vw <= 600 ? 16 : 24;
+  const note = document.querySelector('.note'), noteH = note.offsetHeight + parseFloat(getComputedStyle(note).marginTop);
+  const ws = (vw - pad) / W, hs = (vh - pad - noteH - 14) / H;
+  // phones and tablets: always fit the whole player on screen; desktop: fit the width, and the height down to a readable size
+  const s = touch.matches ? Math.min(1, ws, hs) : Math.min(1, ws, Math.max(hs, Math.min(ws, .55)));
   device.style.transform = `scale(${s})`;
   fit.style.width = W * s + 'px'; fit.style.height = H * s + 'px';
 };
-const fitObs = new ResizeObserver(fitDevice); fitObs.observe(document.body); fitDevice();
+const fitObs = new ResizeObserver(fitDevice); fitObs.observe(document.documentElement); fitDevice();
+addEventListener('orientationchange', () => setTimeout(fitDevice, 150));
 
 /* ---------- tracks ---------- */
 const M = [0,3,7], MAJ = [0,4,7];
